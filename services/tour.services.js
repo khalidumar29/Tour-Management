@@ -1,4 +1,4 @@
-const { Tour } = require("../model/Tour.schema");
+const { Tour, Visitor } = require("../model/Tour.schema");
 
 module.exports.getToursService = async (fieldsString) => {
   let fields = {};
@@ -7,7 +7,7 @@ module.exports.getToursService = async (fieldsString) => {
       fields[el] = 1;
     });
   }
-  console.log(fields);
+
   return await Tour.find({}, { ...fields, _id: 0 });
 };
 
@@ -16,7 +16,9 @@ module.exports.createToursService = async (data) => {
 };
 
 module.exports.getTourByIdService = async (id) => {
-  return await Tour.findById(id);
+  const tour = await Tour.findById(id);
+  const count = tour.__v + 1;
+  return await Tour.findByIdAndUpdate(id, { __v: count }, { new: true });
 };
 
 module.exports.getTrendingTours = async () => {
