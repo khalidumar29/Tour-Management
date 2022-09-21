@@ -7,8 +7,19 @@ module.exports.getToursService = async (fieldsString) => {
       fields[el] = 1;
     });
   }
-
-  return await Tour.find({}, { ...fields, _id: 0 });
+  let limits, skips;
+  if (fieldsString.page) {
+    const { page = 1, limit = 10 } = fieldsString;
+    const skip = (page - 1) * parseInt(limit);
+    skips = skip;
+    limits = parseInt(limit);
+  }
+  const tour = await Tour.find({}, { ...fields, _id: 0 })
+    .skip(skips)
+    .limit(limits);
+  const total = await Tour.countDocuments({});
+  const page = Math.ceil(total / limits);
+  return { total, page, tour };
 };
 
 module.exports.createToursService = async (data) => {

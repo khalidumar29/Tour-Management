@@ -9,8 +9,9 @@ const {
 
 module.exports.getTours = async (req, res, next) => {
   try {
-    const tour = await getToursService(req.query);
+    // pagination
 
+    const tour = await getToursService(req.query);
     res.send(tour);
   } catch (error) {
     next(error);
